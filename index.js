@@ -1,4 +1,5 @@
 
+
 let expense = document.getElementById('expense')
 let description = document.getElementById('description')
 let category = document.getElementById('options')
@@ -25,18 +26,20 @@ function AddExpense(event){
         expense:expense.value,description:description.value,category:category.value
     }
   axios.post('https://crudcrud.com/api/780703b8ea9a419186b495c1dfc5fc77/appoin',obj).then((res)=>{
-    console.log(res);
+    showItems(res.data)
   }).catch((err)=>{
     console.log(err);
   })
 
-  showItems(obj);
+  showItems();
 
   }
  
  
 }
  
+
+
 function showItems(obj){
   let li = document.createElement('li');
    li.id=`${obj.category}`;
@@ -53,16 +56,19 @@ function showItems(obj){
     li.appendChild(editBtn);
     addExpense.appendChild(li);
 
-    window.addEventListener('DOMContentLoaded',(e)=>{
-        Object.keys(localStorage).map((ele)=>{
-            const expense = JSON.parse(localStorage.getItem(ele));
-            showItems(expense);
-        })
-    })
+  
 
 
 
 }
+
+window.addEventListener('DOMContentLoaded',async(e)=>{
+
+    await axios.get('https://crudcrud.com/api/780703b8ea9a419186b495c1dfc5fc77/appoin')
+    .then((res)=>res.data.map(ele=>{
+      showItems(ele);
+    }))
+})
 
 function deleteExpense(event){
    if(event.target.classList.contains('delete')){
