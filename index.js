@@ -41,8 +41,9 @@ function AddExpense(event){
 
 
 function showItems(obj){
+  console.log(obj)
   let li = document.createElement('li');
-   li.id=`${obj.category}`;
+   li.id=`${obj._id}`;
 
    let delBtn = document.createElement('button');
    delBtn.className="btn btn-danger delete";
@@ -73,8 +74,9 @@ window.addEventListener('DOMContentLoaded',async(e)=>{
 function deleteExpense(event){
    if(event.target.classList.contains('delete')){
       const id = event.target.parentElement.id;
-      localStorage.removeItem(id);
-      addExpense.removeChild(event.target.parentElement) 
+      axios.delete(`https://crudcrud.com/api/780703b8ea9a419186b495c1dfc5fc77/appoin/${id}`)
+      .then((res)=>console.log(res))
+      .catch((err)=>console.log(err))
    }
 }
 
@@ -92,4 +94,5 @@ function editExpense(event){
 
      }
 }
+
 
