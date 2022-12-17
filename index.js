@@ -31,7 +31,7 @@ function AddExpense(event){
     console.log(err);
   })
 
-  showItems();
+
 
   }
  
@@ -41,7 +41,7 @@ function AddExpense(event){
 
 
 function showItems(obj){
-  console.log(obj)
+
   let li = document.createElement('li');
    li.id=`${obj._id}`;
 
@@ -83,12 +83,12 @@ function deleteExpense(event){
 function editExpense(event){
      if(event.target.classList.contains('edit')){
         const id = event.target.parentElement.id;
-        let expenseVal = JSON.parse(localStorage.getItem(id));
+        const expenseVal={};
          expenseVal.expense = expense;
          expenseVal.description = description;
          expenseVal.category = category;
 
-         localStorage.removeItem(id);
+         axios.put(`https://crudcrud.com/api/780703b8ea9a419186b495c1dfc5fc77/appoin/${id}`,expenseVal);
 
          addExpense.removeChild(event.target.parentElement);
 
