@@ -15,17 +15,20 @@ function AddExpense(event){
   event.preventDefault();
   
   if(expense.value==''||description.value==''||category.value==''){
-    console.log(expense)
     alert('plz enter all values');
      expense.value='';
      description.value='';
      category.value='';
   }
+  else if(expense.value<=0){
+    alert('plz enter positive value for expense');
+    expense.value='';
+  }
   else{
     let obj={
         expense:expense.value,description:description.value,category:category.value
     }
-  axios.post('https://crudcrud.com/api/780703b8ea9a419186b495c1dfc5fc77/appoin',obj).then((res)=>{
+  axios.post('https://crudcrud.com/api/0e7b883817ad4b10a6e536839b574987/track',obj).then((res)=>{
     showItems(res.data)
   }).catch((err)=>{
     console.log(err);
@@ -65,7 +68,7 @@ function showItems(obj){
 
 window.addEventListener('DOMContentLoaded',async(e)=>{
 
-    await axios.get('https://crudcrud.com/api/780703b8ea9a419186b495c1dfc5fc77/appoin')
+    await axios.get('https://crudcrud.com/api/0e7b883817ad4b10a6e536839b574987/track')
     .then((res)=>res.data.map(ele=>{
       showItems(ele);
     }))
@@ -74,23 +77,24 @@ window.addEventListener('DOMContentLoaded',async(e)=>{
 function deleteExpense(event){
    if(event.target.classList.contains('delete')){
       const id = event.target.parentElement.id;
-      axios.delete(`https://crudcrud.com/api/780703b8ea9a419186b495c1dfc5fc77/appoin/${id}`)
-      .then((res)=>console.log(res))
-      .catch((err)=>console.log(err))
+      axios.delete(`https://crudcrud.com/api/0e7b883817ad4b10a6e536839b574987/track/${id}`)
+       addExpense.removeChild(event.target.parentElement);
    }
 }
 
 function editExpense(event){
      if(event.target.classList.contains('edit')){
         const id = event.target.parentElement.id;
-        const expenseVal={};
-         expenseVal.expense = expense;
-         expenseVal.description = description;
-         expenseVal.category = category;
 
-         axios.put(`https://crudcrud.com/api/780703b8ea9a419186b495c1dfc5fc77/appoin/${id}`,expenseVal);
-
-         addExpense.removeChild(event.target.parentElement);
+       axios.get(`https://crudcrud.com/api/0e7b883817ad4b10a6e536839b574987/track/${id}`)
+       .then((res)=>{
+          expense.value=res.data.expense
+          category.value = res.data.category
+          description.value = res.data.description
+       }).catch((err)=>console.log(err));
+        
+     axios.delete(`https://crudcrud.com/api/0e7b883817ad4b10a6e536839b574987/track/${id}`)
+      addExpense.removeChild(event.target.parentElement);
 
      }
 }
