@@ -11,8 +11,10 @@ btn.addEventListener('click',AddExpense);
 addExpense.addEventListener('click',deleteExpense);
 addExpense.addEventListener('click',editExpense);
 
-function AddExpense(event){
-  event.preventDefault();
+async function AddExpense(event){
+
+  try {
+    event.preventDefault();
   
   if(expense.value==''||description.value==''||category.value==''){
     alert('plz enter all values');
@@ -28,18 +30,15 @@ function AddExpense(event){
     let obj={
         expense:expense.value,description:description.value,category:category.value
     }
-  axios.post('https://crudcrud.com/api/0e7b883817ad4b10a6e536839b574987/track',obj).then((res)=>{
-    showItems(res.data)
-  }).catch((err)=>{
-    console.log(err);
-  })
+  const items  = await axios.post('https://crudcrud.com/api/d9dc3f37615048b4861fc65778f07d6f/track',obj);
+   showItems(items.data);
 
-
-
+}
+  } catch (error) {
+     throw Error(error);
+  }
   }
  
- 
-}
  
 
 
@@ -60,43 +59,54 @@ function showItems(obj){
     li.appendChild(editBtn);
     addExpense.appendChild(li);
 
-  
-
-
-
 }
 
 window.addEventListener('DOMContentLoaded',async(e)=>{
-
-    await axios.get('https://crudcrud.com/api/0e7b883817ad4b10a6e536839b574987/track')
-    .then((res)=>res.data.map(ele=>{
-      showItems(ele);
-    }))
+   try {
+    const  items  = await axios.get('https://crudcrud.com/api/d9dc3f37615048b4861fc65778f07d6f/track')
+      items.data.map((ele)=>{
+        showItems(ele);
+      })
+     
+   } catch (error) {
+     throw Error(error);
+   }
+    
 })
 
-function deleteExpense(event){
-   if(event.target.classList.contains('delete')){
+async function deleteExpense(event){
+   try {
+    if(event.target.classList.contains('delete')){
       const id = event.target.parentElement.id;
-      axios.delete(`https://crudcrud.com/api/0e7b883817ad4b10a6e536839b574987/track/${id}`)
+    await axios.delete(`https://crudcrud.com/api/d9dc3f37615048b4861fc65778f07d6f/track/${id}`)
        addExpense.removeChild(event.target.parentElement);
    }
+   } catch (error) {
+     throw Error(error);
+   }
+  
 }
 
-function editExpense(event){
-     if(event.target.classList.contains('edit')){
-        const id = event.target.parentElement.id;
+async function editExpense(event){
+  try {
+    if(event.target.classList.contains('edit')){
+      const id = event.target.parentElement.id;
 
-       axios.get(`https://crudcrud.com/api/0e7b883817ad4b10a6e536839b574987/track/${id}`)
-       .then((res)=>{
-          expense.value=res.data.expense
-          category.value = res.data.category
-          description.value = res.data.description
-       }).catch((err)=>console.log(err));
-        
-     axios.delete(`https://crudcrud.com/api/0e7b883817ad4b10a6e536839b574987/track/${id}`)
-      addExpense.removeChild(event.target.parentElement);
+     const item = await axios.get(`https://crudcrud.com/api/d9dc3f37615048b4861fc65778f07d6f/track/${id}`)
+    
+        expense.value=item.data.expense
+        category.value = item.data.category
+        description.value = item.data.description
+   
+      
+   await axios.delete(`https://crudcrud.com/api/d9dc3f37615048b4861fc65778f07d6f/track/${id}`)
+    addExpense.removeChild(event.target.parentElement);
 
-     }
+   }
+  } catch (error) {
+    throw Error(error);
+  }
+    
 }
 
 
